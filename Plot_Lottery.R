@@ -35,3 +35,41 @@ ggplot(mega_ajust) +
   annotate("text", x = mean(mega_ajust$Rateio_Quina)*3.5, y = 1e+06, label=paste0(floor(mean(mega_ajust$Rateio_Quina)/1000), " mil reais"))+
   annotate("text", x = mean(mega_ajust$Rateio_Quadra)*3.5, y = 1e+06, label=paste0(floor(mean(mega_ajust$Rateio_Quadra)), " reais"))
 
+
+
+
+
+
+
+# CREATE ADDITIONAL PLOTS TO UNDERSTAND THE RELATIONSHIP BETWEEN PRICES
+
+# GANHO QUINA X QUADRA (quina ~ quadra/0.013)
+library(ggpubr)
+ggplot(mega_ajust, aes(x = Rateio_Quina, y = Rateio_Quadra)) +
+  geom_point(aes(x = Rateio_Quina, y = Rateio_Quadra, alpha = Concurso), color = "red") +
+  xlab("Ganho na quina") + ylab("Ganho na quadra") +
+  geom_smooth(method="lm", aes(x = Rateio_Quina, y = Rateio_Quadra)) +
+  theme(legend.position="") +
+  stat_cor(label.y = 1500) +
+  stat_regline_equation(label.y = 1250)
+
+# GANHO QUINA X SENA (quina ~ sena/550)
+library(ggpubr)
+ggplot(mega_ajust[which(mega_ajust$Rateio_Sena>0),], aes(x = Rateio_Quina, y = Rateio_Sena)) +
+  geom_point(aes(x = Rateio_Quina, y = Rateio_Sena, alpha = Concurso), color = "red") +
+  xlab("Ganho na quina") + ylab("Ganho na sena") +
+  geom_smooth(method="lm", aes(x = Rateio_Quina, y = Rateio_Sena)) +
+  theme(legend.position="") +
+  stat_cor(label.y = 2e8) +
+  stat_regline_equation(label.y = 1e8)
+
+# GANHO QUINA X SENA (quina ~ sena/470 a sena/430)
+library(ggpubr)
+ggplot(mega_ajust[which(mega_ajust$Rateio_Sena==0 & mega_ajust$Concurso%%5!=0 &
+                          mega_ajust$Estimativa_Premio>2e7),], aes(x = Rateio_Quina, y = Estimativa_Premio)) +
+  geom_point(aes(x = Rateio_Quina, y = Estimativa_Premio, alpha = Concurso), color = "red") +
+  xlab("Ganho na quina") + ylab("Ganho na sena") +
+  geom_smooth(method="lm", aes(x = Rateio_Quina, y = Estimativa_Premio)) +
+  theme(legend.position="") +
+  stat_cor(label.y = 2e8) +
+  stat_regline_equation(label.y = 1e8)
