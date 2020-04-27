@@ -48,3 +48,14 @@ sena_fun <- function(numb = 6,
     prob(numb, 4) * (funqua5(numb)*premio_quadra)                               # Quadra
   # Apresenta perda média por aposta (R$)
 }
+
+
+# PLOT MODEL
+mm <- seq(10e6, 200e6, length=20)
+nn <- seq(6, 15, by = 1)
+zz <- outer(nn, mm, sena_fun)
+persp(nn, mm, zz, theta = 40, phi = 30, shade = 0.5,
+      xlab = "Números apostados",
+      ylab = "Valor da mega sena",
+      zlab = "Ganho (R$) por jogo",
+      ylim = c(10e6, 200e6))
