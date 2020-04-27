@@ -26,15 +26,25 @@ valor_aposta <- function(aposta){
   c(4.5, 31.5, 126, 378, 945, 2079, 4158, 7722, 13513.5, 22522.5)[aposta-5]
 }
 sena_fun <- function(numb = 6, 
-                     premio = 50e6, 
-                     premio_quina = 29e3,
-                     premio_quadra = 538){
+                     premio = 50e6,
+                     final_5 = F){
   prob_total <<- prob(numb,6) + prob(numb,5) + prob(numb,4)
+  if(final_5){
+    premio_quina <<- premio/470
+  } else {
+    premio_quina <<- premio/420
+  }
+  premio_quadra <- premio_quina*0.0013
   
     (1 - prob_total) * (-valor_aposta(numb))  + # Bilhete
+
+    # Prob sena    
+    prob(numb, 6) * (premio + funqui6(numb)*premio_quina + funqua6(numb)*premio_quadra) + # Sena
     
-    prob_sena * (premio + funqui6(numb)*premio_quina + funqua6(numb)*premio_quadra) + # Sena
-    prob_quina * (funqui5(numb)*premio_quina + funqua5(numb)*premio_quadra) +         # Quina
-    prob_quadra * (funqua5(numb)*premio_quadra)                               # Quadra
+    # Prob quina
+    prob(numb, 5) * (funqui5(numb)*premio_quina + funqua5(numb)*premio_quadra) +         # Quina
+    
+    # Prob quadra
+    prob(numb, 4) * (funqua5(numb)*premio_quadra)                               # Quadra
   # Apresenta perda média por aposta (R$)
 }
