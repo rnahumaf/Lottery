@@ -8,7 +8,7 @@ library(ggplot2)
 mega_sena <- read.xlsx("MegaSena.xlsx", sheetIndex = 1)
 
 # variável separada para manipulação
-mega_earn <- mega_sena[,which(colnames(mega_sena) %in% c("Concurso", "Estimativa_Premio", "Rateio_Sena", "Rateio_Quadra", "Rateio_Quina"))]
+mega_earn <- mega_sena[,which(colnames(mega_sena) %in% c("Concurso", "Estimativa_Premio", "Rateio_Sena", "Rateio_Quadra", "Rateio_Quina", "Ganhadores_Sena"))]
 mega_earn <- mega_earn[which(mega_earn$Estimativa_Premio>0),]
 mega_earn <- mega_earn[which(mega_earn$Concurso>=868),]
 
@@ -42,6 +42,16 @@ ggplot(mega_ajust) +
 
 
 # CREATE ADDITIONAL PLOTS TO UNDERSTAND THE RELATIONSHIP BETWEEN PRICES
+
+# GANHO SENA X JOGADORES DA SENA (ganhadores ~ Estimativa*2e-8)
+library(ggpubr)
+ggplot(mega_ajust, aes(x = Estimativa_Premio, y = Ganhadores_Sena)) +
+  geom_point(aes(x = Estimativa_Premio, y = Ganhadores_Sena, alpha = Concurso), color = "red") +
+  xlab("Estimativa de Premio") + ylab("Ganhadores na sena") +
+  geom_smooth(method="lm", aes(x = Estimativa_Premio, y = Ganhadores_Sena)) +
+  theme(legend.position="") +
+  stat_cor(label.y = 10) +
+  stat_regline_equation(label.y = 5)
 
 # GANHO QUINA X QUADRA (quina ~ quadra/0.013)
 library(ggpubr)
